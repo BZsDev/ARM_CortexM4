@@ -47,7 +47,7 @@ SOURCES = Source\main.c
 
 OBJS := $(patsubst $(SRC_DIRS)\\%.c,$(BUILD_DIR)\\%.o,$(SOURCES))
 
-$(BUILD_DIR)\\%.o: $(SRC_DIRS)\%.c
+$(BUILD_DIR)\\%.o: $(SRC_DIRS)\\%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 
