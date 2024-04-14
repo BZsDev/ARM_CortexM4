@@ -1,9 +1,9 @@
 
 # Target platform 
-PLATFORM = HOST
+PLATFORM = NUCLEO_G431KB
 
 TARGET = main
-MCU = STM32F103C8T6
+MCU = NUCLEO_G431KB
 
 BUILD_DIR ?= Debug
 SRC_DIRS ?= Source
@@ -16,8 +16,8 @@ GFLAGS = -Wall \
         -std=c89
 		
 # Architectures Specific Flags
-ifeq ($(PLATFORM),STM32F103C8T6)
-    CPU = cortex-m3
+ifeq ($(PLATFORM),NUCLEO_G431KB)
+    CPU = cortex-m4
     ARCH = armv7e-m
     SPECS = nosys.specs
     FLOAT = hard
@@ -25,17 +25,19 @@ ifeq ($(PLATFORM),STM32F103C8T6)
 endif
 
 # Platform Specific Flags
-ifeq ($(PLATFORM),MSP432)
-    LINKER_FILE = msp432p401r.lds
+ifeq ($(PLATFORM),NUCLEO_G431KB)
+    LINKER_FILE = STM32G431KBTX_FLASH.ld
 else
 endif
 
 # Compiler Flags and Defines
-ifeq ($(PLATFORM),STM32F103C8T6)
+ifeq ($(PLATFORM),NUCLEO_G431KB)
     CC = arm-none-eabi-gcc
     LD = arm-none-eabi-ld
     LDFLAGS = -Wl,-Map=$(BUILD_DIR)/$(TARGET).map -T $(LINKER_FILE)
-    CFLAGS = -mcpu=$(CPU) -march=$(ARCH) -mthumb --specs=$(SPECS) $(GFLAGS)
+    CFLAGS = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(GFLAGS)
+    CPPFLAGS = -I/Include
+    #CFLAGS = -mcpu=$(CPU) -march=$(ARCH) -mthumb --specs=$(SPECS) $(GFLAGS)
 else
     CC = gcc
     LD ?=
@@ -43,13 +45,20 @@ else
     CFLAGS = $(GFLAGS)
 endif
 
-SOURCES = Source\main.c
+SOURCES = Source/main.c
 
-OBJS := $(patsubst $(SRC_DIRS)\\%.c,$(BUILD_DIR)\\%.o,$(SOURCES))
+OBJS := $(patsubst $(SRC_DIRS)/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
+OBJS_CLEAN := $(subst /,\,$(OBJS))
 
-$(BUILD_DIR)\\%.o: $(SRC_DIRS)\\%.c
+
+$(BUILD_DIR)/%.i: $(SRC_DIRS)/%.c
+	$(CC) -I$(INCLUDE) -E $< -o $@
+
+$(BUILD_DIR)/%.o: $(SRC_DIRS)/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+$(BUILD_DIR)/startup_stm32g431kbtx.o: $(SRC_DIRS)/startup_stm32g431kbtx.s
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 .PHONY: compile-all
 compile-all: $(OBJS)
@@ -58,11 +67,11 @@ compile-all: $(OBJS)
 build: all
 
 .PHONY: all
-all: $(BUILD_DIR)\$(TARGET).out
+all: $(BUILD_DIR)/$(TARGET).out
 
 .PHONY: clean
 clean:
-	del /Q $(OBJS) $(BUILD_DIR)\$(TARGET).out
+	del /Q $(OBJS_CLEAN) $(BUILD_DIR)\$(TARGET).out
 
-$(BUILD_DIR)\$(TARGET).out: $(OBJS)
+$(BUILD_DIR)/$(TARGET).out: $(OBJS) Source/startup_stm32g431kbtx.o
 	$(CC) $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
