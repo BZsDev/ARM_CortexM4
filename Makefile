@@ -33,7 +33,7 @@ endif
 ifeq ($(PLATFORM),NUCLEO_G431KB)
     CC = arm-none-eabi-gcc
     LD = arm-none-eabi-ld
-    LDFLAGS = -Wl,-Map=$(BUILD_DIR)/$(TARGET).map -T$(LINKER_FILE)
+    LDFLAGS = -specs=nosys.specs -Wl,-Map=$(BUILD_DIR)/$(TARGET).map -T$(LINKER_FILE)
     CFLAGS = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(GFLAGS) $(WFLAGS)
     #CFLAGS = -mcpu=$(CPU) -march=$(ARCH) -mthumb --specs=$(SPECS) $(GFLAGS)
 else
@@ -74,7 +74,7 @@ all: $(BUILD_DIR)/$(TARGET).exe
 
 .PHONY: clean
 clean:
-	del /Q $(OBJS_CLEAN) $(BUILD_DIR)\$(TARGET).out
+	del /Q $(OBJS_CLEAN) $(BUILD_DIR)\$(TARGET).exe
 
 $(BUILD_DIR)/$(TARGET).exe: $(OBJS) Debug/startup_stm32g431xx.o Debug/system_stm32g4xx.o
 	$(CC) $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
