@@ -21,23 +21,23 @@
         ///////////////////////// BEGIN - MANUALLY ADDED TASKS /////////////////////////
 
         {
-            "label": "# Install # Active Config",
+            "label": "# Install #",
             "type": "shell",
             "command": "openocd.exe",
             "args":
             [
                 "-f", "interface/stlink.cfg",
                 "-f", "target/stm32g4x.cfg",
-                "-c", "program Debug/MMBldcmEsc.elf preverify verify reset exit"
+                "-c", "program Debug/main.elf preverify verify reset exit"
             ],
             "options":
             {
-                "cwd": "${workspaceFolder}/.vscode",
+                "cwd": "${workspaceFolder}",
             },
             "dependsOrder": "sequence",
             "dependsOn":
             [
-                "# Prepare # Active Config",
+                "# Build #",
             ],
             "group":
             {
@@ -47,7 +47,7 @@
             "problemMatcher":
             {
                 "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
+                "fileLocation": ["relative", "${workspaceFolder}"]
             },
             "presentation":
             {
@@ -67,147 +67,12 @@
         //////////////////////////// BEGIN - GENERATED TASKS ///////////////////////////
 
         {
-            "label": "# ReGenerate Visual Studio Code Makefile Project #",
+            "label": "# Build #",
             "type": "shell",
-            "command": "py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start MMVSCodeMakefileProjGenerator.py regenerate ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop MMVSCodeMakefileProjGenerator.py regenerate",
+            "command": "make -f Makefile build",
             "options":
             {
-                "cwd": "${workspaceFolder}/.vscode",
-            },
-            "group":
-            {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation":
-            {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "label": "# Build # MMBldcmEsc - Debug",
-            "type": "shell",
-            "command": "py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_MMBldcmEsc_Debug.mk build ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f Debug/Makefile_MMBldcmEsc_Debug.mk build ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_MMBldcmEsc_Debug.mk build",
-            "options":
-            {
-                "cwd": "${workspaceFolder}/.vscode",
-            },
-            "group":
-            {
-                "kind": "none",
-                "isDefault": false
-            },
-            "problemMatcher":
-            {
-                "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
-            },
-            "presentation":
-            {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "label": "# ReBuild # MMBldcmEsc - Debug",
-            "type": "shell",
-            "command": "py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_MMBldcmEsc_Debug.mk rebuild ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f Debug/Makefile_MMBldcmEsc_Debug.mk rebuild ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_MMBldcmEsc_Debug.mk rebuild",
-            "options":
-            {
-                "cwd": "${workspaceFolder}/.vscode",
-            },
-            "group":
-            {
-                "kind": "none",
-                "isDefault": false
-            },
-            "problemMatcher":
-            {
-                "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
-            },
-            "presentation":
-            {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "label": "# Clean # MMBldcmEsc - Debug",
-            "type": "shell",
-            "command": "py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_MMBldcmEsc_Debug.mk clean ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f Debug/Makefile_MMBldcmEsc_Debug.mk clean ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_MMBldcmEsc_Debug.mk clean",
-            "options":
-            {
-                "cwd": "${workspaceFolder}/.vscode",
-            },
-            "group":
-            {
-                "kind": "none",
-                "isDefault": false
-            },
-            "problemMatcher":
-            {
-                "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
-            },
-            "presentation":
-            {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "label": "# Prepare # MMBldcmEsc - Debug",
-            "type": "shell",
-            "command": "py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_MMBldcmEsc_Debug.mk prepare ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f Debug/Makefile_MMBldcmEsc_Debug.mk prepare ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_MMBldcmEsc_Debug.mk prepare",
-            "options":
-            {
-                "cwd": "${workspaceFolder}/.vscode",
-            },
-            "group":
-            {
-                "kind": "none",
-                "isDefault": false
-            },
-            "problemMatcher":
-            {
-                "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
-            },
-            "presentation":
-            {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "label": "# Build # Active Config",
-            "type": "shell",
-            "command": "Invoke-Expression(\"'py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk build ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f ' + '${command:cpptools.activeConfigName}'.replace('# Config # MMBldcmEsc', '').replace(' - ', '')  + '/Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk build ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk build'\")",
-            "options":
-            {
-                "cwd": "${workspaceFolder}/.vscode",
+                "cwd": "${workspaceFolder}",
             },
             "group":
             {
@@ -217,7 +82,7 @@
             "problemMatcher":
             {
                 "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
+                "fileLocation": ["relative", "${workspaceFolder}"]
             },
             "presentation":
             {
@@ -230,12 +95,12 @@
             }
         },
         {
-            "label": "# ReBuild # Active Config",
+            "label": "# ReBuild #",
             "type": "shell",
-            "command": "Invoke-Expression(\"'py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk rebuild ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f ' + '${command:cpptools.activeConfigName}'.replace('# Config # MMBldcmEsc', '').replace(' - ', '')  + '/Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk rebuild ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk rebuild'\")",
+            "command": "make -f Makefile rebuild",
             "options":
             {
-                "cwd": "${workspaceFolder}/.vscode",
+                "cwd": "${workspaceFolder}",
             },
             "group":
             {
@@ -245,7 +110,7 @@
             "problemMatcher":
             {
                 "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
+                "fileLocation": ["relative", "${workspaceFolder}"]
             },
             "presentation":
             {
@@ -258,12 +123,12 @@
             }
         },
         {
-            "label": "# Clean # Active Config",
+            "label": "# Clean #",
             "type": "shell",
-            "command": "Invoke-Expression(\"'py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk clean ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f ' + '${command:cpptools.activeConfigName}'.replace('# Config # MMBldcmEsc', '').replace(' - ', '')  + '/Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk clean ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk clean'\")",
+            "command": "make -f Makefile clean",
             "options":
             {
-                "cwd": "${workspaceFolder}/.vscode",
+                "cwd": "${workspaceFolder}",
             },
             "group":
             {
@@ -273,35 +138,7 @@
             "problemMatcher":
             {
                 "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
-            },
-            "presentation":
-            {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "label": "# Prepare # Active Config",
-            "type": "shell",
-            "command": "Invoke-Expression(\"'py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py start Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk prepare ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMVSCodeMakefileProjGenerator.py . SILENT ; make -s -f ' + '${command:cpptools.activeConfigName}'.replace('# Config # MMBldcmEsc', '').replace(' - ', '')  + '/Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk prepare ; py -3 ${env:MMVSCODEMAKEFILEPROJGENERATOR_HOME}/MMMeasureMakeTime.py stop Makefile_' + '${command:cpptools.activeConfigName}'.replace('# Config # ', '').replace(' - ', '_') + '.mk prepare'\")",
-            "options":
-            {
-                "cwd": "${workspaceFolder}/.vscode",
-            },
-            "group":
-            {
-                "kind": "none",
-                "isDefault": false
-            },
-            "problemMatcher":
-            {
-                "base": "$gcc",
-                "fileLocation": ["relative", "${workspaceFolder}/.vscode"]
+                "fileLocation": ["relative", "${workspaceFolder}"]
             },
             "presentation":
             {
