@@ -1,0 +1,10 @@
+{
+    "editor.accessibilityPageSize": 11,
+    "files.associations": {
+        "stm32g431xx.h": "c",
+        "stdint.h": "c",
+        "system_stm32g4xx.h": "c",
+        "stdint-gcc.h": "c"
+    },
+    "editor.fontSize": 14
+}
