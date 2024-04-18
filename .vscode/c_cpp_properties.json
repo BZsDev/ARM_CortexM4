@@ -26,11 +26,11 @@
         /////////////////////// BEGIN - GENERATED CONFIGURATIONS ///////////////////////
 
         {
-            "name": "# Config # MMBldcmEsc - Debug",
+            "name": "# Debug #",
             "intelliSenseMode": "windows-gcc-arm",
             "cStandard": "c89",
             "cppStandard": "c++98",
-            "compilerPath": "D:/programfiles/ArmGNUToolchain/bin/arm-none-eabi-gcc.EXE",
+            "compilerPath": "C:/arm-gnu-toolchain-13.2.Rel1-mingw-w64-i686-arm-none-eabi/bin/arm-none-eabi-gcc.EXE",
             "compilerArgs":
             [
                 "-mcpu=cortex-m4",
@@ -676,28 +676,16 @@
             ],
             "includePath":
             [
-                    "${workspaceFolder}/.vscode/../ThirdParty/Inc",
-                    "${workspaceFolder}/.vscode/../App/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMCmsis/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMBitOps/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMTypes/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMSuppressGccWarnings/Inc",
-                    "${workspaceFolder}/.vscode/../ThirdParty/Src",
-                    "${workspaceFolder}/.vscode/../App/Src"
+                    "${workspaceFolder}/Include",
+                    "${workspaceFolder}/STM32G431/Inc"
             ],
             "browse":
             {
                 "limitSymbolsToIncludedHeaders": true,
                 "path":
                 [
-                    "${workspaceFolder}/.vscode/../ThirdParty/Inc",
-                    "${workspaceFolder}/.vscode/../App/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMCmsis/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMBitOps/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMTypes/Inc",
-                    "${workspaceFolder}/.vscode/../../../../mm_utils/MMSuppressGccWarnings/Inc",
-                    "${workspaceFolder}/.vscode/../ThirdParty/Src",
-                    "${workspaceFolder}/.vscode/../App/Src"
+                    "${workspaceFolder}/Include",
+                    "${workspaceFolder}/STM32G431/Inc"
                 ]
             }
         }

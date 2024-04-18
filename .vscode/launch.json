@@ -26,40 +26,15 @@
         /////////////////////// BEGIN - GENERATED CONFIGURATIONS ///////////////////////
 
         {
-            "name": "# Debug (w Build) # Debug (MMBldcmEsc - Debug)",
+            "name": "# Debug #",
             "type": "cortex-debug",
             "request": "launch",
-            "cwd": "${workspaceFolder}/.vscode",
-            "executable": "${workspaceFolder}/.vscode/Debug/MMBldcmEsc.elf",
-            "preLaunchTask": "# Prepare # MMBldcmEsc - Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/Debug/main.elf",
+            "preLaunchTask": "# Build #",
             "servertype": "openocd",
             "interface": "swd",
-            "svdFile": "${workspaceFolder}/.vscode/../ThirdParty/Svd/STM32G431xx.svd",
-            "runToEntryPoint": "main",
-            "preLaunchCommands":
-            [
-                "set mem inaccessible-by-default off"
-            ],
-            "liveWatch":
-            {
-                "enabled": true,
-                "samplesPerSecond": 20
-            },
-            "configFiles":
-            [
-                "interface/stlink.cfg",
-                "target/stm32g4x.cfg"
-            ]
-        },
-        {
-            "name": "# Debug (w/o Build) # Debug (MMBldcmEsc - Debug)",
-            "type": "cortex-debug",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/.vscode",
-            "executable": "${workspaceFolder}/.vscode/Debug/MMBldcmEsc.elf",
-            "servertype": "openocd",
-            "interface": "swd",
-            "svdFile": "${workspaceFolder}/.vscode/../ThirdParty/Svd/STM32G431xx.svd",
+            "svdFile": "${workspaceFolder}/STM32G431/Svd/STM32G431xx.svd",
             "runToEntryPoint": "main",
             "preLaunchCommands":
             [

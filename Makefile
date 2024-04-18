@@ -32,9 +32,8 @@ endif
 # Compiler Flags and Defines
 ifeq ($(PLATFORM),NUCLEO_G431KB)
     CC = arm-none-eabi-gcc
-    LD = arm-none-eabi-ld
-    LDFLAGS = -specs=nosys.specs -Wl,-Map=$(BUILD_DIR)/$(TARGET).map -T$(LINKER_FILE)
-    CFLAGS = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(GFLAGS) $(WFLAGS)
+    LDFLAGS = -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 --specs=nano.specs -Xlinker --gc-sections -Wl,--no-warn-rwx-segments
+    CFLAGS =  --specs=nano.specs -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(GFLAGS) $(WFLAGS)
     #CFLAGS = -mcpu=$(CPU) -march=$(ARCH) -mthumb --specs=$(SPECS) $(GFLAGS)
 else
     CC = gcc
@@ -47,7 +46,10 @@ CPPFLAGS = -IInclude -ISTM32G431/Inc -DSTM32G431xx
 
 SOURCES = Source/main.c
 
-OBJS := $(patsubst $(SRC_DIRS)/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
+OBJS := $(patsubst $(SRC_DIRS)/%.c,$(BUILD_DIR)/%.o,$(SOURCES)) \
+        Debug/startup_stm32g431xx.o \
+        Debug/system_stm32g4xx.o
+
 OBJS_CLEAN := $(subst /,\,$(OBJS))
 
 
@@ -70,11 +72,11 @@ compile-all: $(  )
 build: all
 
 .PHONY: all
-all: $(BUILD_DIR)/$(TARGET).exe
+all: $(BUILD_DIR)/$(TARGET).elf
 
 .PHONY: clean
 clean:
-	del /Q $(OBJS_CLEAN) $(BUILD_DIR)\$(TARGET).exe
+	rm -f $(OBJS) $(BUILD_DIR)\$(TARGET).elf
 
-$(BUILD_DIR)/$(TARGET).exe: $(OBJS) Debug/startup_stm32g431xx.o Debug/system_stm32g4xx.o
-	$(CC) $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
+$(BUILD_DIR)/$(TARGET).elf: $(OBJS)
+	$(CC) -T$(LINKER_FILE) $(OBJS) $(LDFLAGS) -o $@
