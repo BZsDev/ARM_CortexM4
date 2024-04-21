@@ -69,7 +69,7 @@
         {
             "label": "# Build #",
             "type": "shell",
-            "command": "make -f Makefile build",
+            "command": "make -f Makefile build -s",
             "options":
             {
                 "cwd": "${workspaceFolder}",
@@ -97,7 +97,7 @@
         {
             "label": "# ReBuild #",
             "type": "shell",
-            "command": "make -f Makefile rebuild",
+            "command": "make -f Makefile rebuild -s",
             "options":
             {
                 "cwd": "${workspaceFolder}",

@@ -1,3 +1,6 @@
 *.o
 *.i
 *.out
+*.exe
+*.map
+*.elf

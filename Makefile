@@ -65,18 +65,15 @@ $(BUILD_DIR)/startup_stm32g431xx.o: STM32G431/Src/startup_stm32g431xx.S
 $(BUILD_DIR)/system_stm32g4xx.o: STM32G431/Src/system_stm32g4xx.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-.PHONY: compile-all
-compile-all: $(  )
+.PHONY: rebuild
+ReBuild: clean build
 
 .PHONY: build
-build: all
-
-.PHONY: all
-all: $(BUILD_DIR)/$(TARGET).elf
+build: $(BUILD_DIR)/$(TARGET).elf
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS) $(BUILD_DIR)\$(TARGET).elf
+	rm -f $(OBJS) $(BUILD_DIR)\$(TARGET).elf $(BUILD_DIR)\$(TARGET).map
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 	$(CC) -T$(LINKER_FILE) $(OBJS) $(LDFLAGS) -o $@

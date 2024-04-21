@@ -4,7 +4,12 @@
         "stm32g431xx.h": "c",
         "stdint.h": "c",
         "system_stm32g4xx.h": "c",
-        "stdint-gcc.h": "c"
+        "stdint-gcc.h": "c",
+        "stm32g4xx.h": "c"
     },
-    "editor.fontSize": 14
+    "editor.fontSize": 14,
+    "cSpell.words": [
+        "GPIOBEN"
+    ],
+    "cSpell.enabled": false
 }

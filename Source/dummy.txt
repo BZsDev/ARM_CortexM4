@@ -1,0 +1,6 @@
+RCC  - Reset and clock control
+APB  - Advanced Peripheral Bus
+RSTR - Reset register
+CCMR - capture/compare mode register
+CR   - control register
+DIER - DMA/Interrupt enable register

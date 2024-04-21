@@ -40,16 +40,16 @@
 
 /* CMSIS compiler specific defines */
 #ifndef   __ASM
-  #define __ASM                                  __asm
+  #define __ASM                                  __asm__
 #endif
 #ifndef   __INLINE
-  #define __INLINE                               inline
+  #define __INLINE                               __inline__
 #endif
 #ifndef   __STATIC_INLINE
-  #define __STATIC_INLINE                        static inline
+  #define __STATIC_INLINE                        static __inline__
 #endif
 #ifndef   __STATIC_FORCEINLINE
-  #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static __inline__
 #endif
 #ifndef   __NO_RETURN
   #define __NO_RETURN                            __attribute__((__noreturn__))
@@ -120,6 +120,8 @@
 #endif
 
 /* #########################  Startup and Lowlevel Init  ######################## */
+
+#define __PROGRAM_START
 
 #ifndef __PROGRAM_START
 

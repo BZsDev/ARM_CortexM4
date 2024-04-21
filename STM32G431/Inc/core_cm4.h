@@ -22,7 +22,7 @@
  * limitations under the License.
  */
 
-/* #include "MMDisableGccWarnings.h" */  /* Added by MM to suppress warnings in this file. */
+#include "DisableGccWarnings.h"  /* Added by MM to suppress warnings in this file. */
 
 #if   defined ( __ICCARM__ )
   #pragma system_include         /* treat file as system include file for MISRA check */
@@ -2130,4 +2130,4 @@ __STATIC_INLINE int32_t ITM_CheckChar (void)
 
 #endif /* __CMSIS_GENERIC */
 
-/* #include "MMEnableGccWarnings.h" */   /* Added by MM to suppress warnings in this file. */
+#include "EnableGccWarnings.h"   /* Added by MM to suppress warnings in this file. */
