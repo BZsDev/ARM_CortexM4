@@ -3,6 +3,17 @@
 #include "header.h"
 #include "stm32g4xx.h"
 
+#define PROJDEF_SYSCLK_FREQ_HZ      (16000000u)
+#define PROJCFG_AHBPRESC        (1u)
+#define PROJCFG_APB1PRESC       (1u)
+#define PROJCFG_APB2PRESC       (1u)
+
+#define PROJDEF_HCLK_FREQ_HZ  (PROJDEF_SYSCLK_FREQ_HZ / PROJCFG_AHBPRESC)
+#define PROJDEF_PCLK1_FREQ_HZ (PROJDEF_HCLK_FREQ_HZ / PROJCFG_APB1PRESC) 
+#define PROJDEF_PCLK2_FREQ_HZ (PROJDEF_HCLK_FREQ_HZ / PROJCFG_APB2PRESC)
+
+#define PROJDEF_APB1_TIM_FREQ_HZ (PROJDEF_PCLK1_FREQ_HZ * ((PROJCFG_APB1PRESC == 1u) ? (1u) : (2u)))
+#define PROJDEF_APB2_TIM_FREQ_HZ (PROJDEF_PCLK2_FREQ_HZ * ((PROJCFG_APB2PRESC == 1u) ? (1u) : (2u)))
 
 #define MACRO_0 3u
 
@@ -35,11 +46,11 @@ void TIM3_IRQHandler(void)
 int main(void)
 {
     uint32_t timerCntr;
-    volatile uint32_t asd = SystemCoreClock;
+    volatile uint32_t asd;
 
-    SystemCoreClockUpdate(); 
-    
-    /* printf("Hello %d", MACRO_0); */
+    SystemCoreClockUpdate();
+
+    asd = SystemCoreClock;
 
     RCC->AHB2ENR |= (uint32_t)RCC_AHB2ENR_GPIOBEN;
     GPIOB->MODER &= (uint32_t)~GPIO_MODER_MODE8;
@@ -55,7 +66,7 @@ int main(void)
     GPIOB->AFR[0] &= (uint32_t)~GPIO_AFRL_AFRL5;
     GPIOB->AFR[0] |= (uint32_t)~GPIO_AFRL_AFSEL5_1;
 
-    RCC->APB1RSTR1 |= (uint32_t)RCC_APB1ENR1_TIM3EN;
+    RCC->APB1ENR1 |= (uint32_t)RCC_APB1ENR1_TIM3EN;
     TIM3->ARR = (uint32_t)16000000u;
     TIM3->CCMR1 |= (uint32_t)TIM_CCMR1_CC1S_1;
     TIM3->CCER |= (uint32_t)TIM_CCER_CC1E;
@@ -69,6 +80,7 @@ int main(void)
     RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV4;
 
     TIM2->PSC &= (uint32_t)~TIM_PSC_PSC_Msk;
+
 
     RCC->APB1ENR1 |= (uint32_t)RCC_APB1ENR1_TIM2EN;
     /* TIM2->EGR */
