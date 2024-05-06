@@ -1,4 +1,5 @@
 RCC  - Reset and clock control
+AHB  - Advanced High-performance Bus
 APB  - Advanced Peripheral Bus
 RSTR - Reset register
 CCMR - capture/compare mode register

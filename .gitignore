@@ -4,3 +4,6 @@
 *.exe
 *.map
 *.elf
+*.lst
+*.d
+Dummy/*

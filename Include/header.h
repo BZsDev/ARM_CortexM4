@@ -1,3 +1,1 @@
-int var = 1;
-
-void TIM2_IRQHandler(void);
+int var = 3;

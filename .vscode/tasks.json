@@ -125,7 +125,7 @@
         {
             "label": "# Clean #",
             "type": "shell",
-            "command": "make -f Makefile clean",
+            "command": "make -f Makefile clean -s",
             "options":
             {
                 "cwd": "${workspaceFolder}",

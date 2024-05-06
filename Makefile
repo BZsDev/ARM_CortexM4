@@ -44,17 +44,26 @@ endif
 
 CPPFLAGS = -IInclude -ISTM32G431/Inc -DSTM32G431xx
 
-SOURCES = Source/main.c
+SOURCES := Source/main.c \
+           Source/GPIO.c \
+           Source/Test.c
+
+DEPS := $(patsubst $(SRC_DIRS)/%.c,$(BUILD_DIR)/%.d,$(SOURCES))
 
 OBJS := $(patsubst $(SRC_DIRS)/%.c,$(BUILD_DIR)/%.o,$(SOURCES)) \
         Debug/startup_stm32g431xx.o \
         Debug/system_stm32g4xx.o
 
-OBJS_CLEAN := $(subst /,\,$(OBJS))
+CLEAN_FILES := $(subst /,\,$(OBJS)) $(subst /,\,$(DEPS))
 
+$(BUILD_DIR)/%.d: $(SRC_DIRS)/%.c
+	$(CC) -MM -MT $(patsubst %.d,%.o,$@) -MT $@ $(CPPFLAGS) $< > $@
+    
 
 $(BUILD_DIR)/%.i: $(SRC_DIRS)/%.c
 	$(CC) -I$(INCLUDE) -E $< -o $@
+
+-include $(DEPS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIRS)/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
@@ -65,15 +74,35 @@ $(BUILD_DIR)/startup_stm32g431xx.o: STM32G431/Src/startup_stm32g431xx.S
 $(BUILD_DIR)/system_stm32g4xx.o: STM32G431/Src/system_stm32g4xx.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+EXTLISTCREATOR ?= arm-none-eabi-objdump
+
 .PHONY: rebuild
-ReBuild: clean build
+ReBuild: clean build rebuild_message
 
 .PHONY: build
-build: $(BUILD_DIR)/$(TARGET).elf
+build: $(BUILD_DIR)/$(TARGET).elf build_message
+
+.PHONY: build_message
+build_message:
+	@echo Build Done!
+
+.PHONY: rebuild_message
+rebuild_message:
+	@echo ReBuild Done!
+
+.PHONY: clean_message
+clean_message:
+	@echo Clean Done!
 
 .PHONY: clean
-clean:
-	rm -f $(OBJS) $(BUILD_DIR)\$(TARGET).elf $(BUILD_DIR)\$(TARGET).map
+clean: clean_all clean_message
 
-$(BUILD_DIR)/$(TARGET).elf: $(OBJS)
+.PHONY: clean_all
+clean_all:
+	@del /F /Q $(CLEAN_FILES) $(BUILD_DIR)\$(TARGET).elf $(BUILD_DIR)\$(TARGET).lst
+
+#$(BUILD_DIR)\$(TARGET).map
+
+$(BUILD_DIR)/$(TARGET).elf: $(DEPS) $(OBJS)
 	$(CC) -T$(LINKER_FILE) $(OBJS) $(LDFLAGS) -o $@
+	$(EXTLISTCREATOR) --source --all-headers --demangle --disassemble --line-numbers --reloc --syms --wide $@ > $(BUILD_DIR)/$(TARGET).lst
