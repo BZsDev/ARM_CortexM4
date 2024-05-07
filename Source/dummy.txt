@@ -6,4 +6,13 @@ CCMR - capture/compare mode register
 CR   - control register
 DIER - DMA/Interrupt enable register
 
+#define BITFIELD_SET(variable, bitfield)
+ 
+#define BITFIELD_CLEAR(variable, bitfield)
+ 
+#define BITFIELD_INVERT(variable, bitfield)
+ 
+#define BITFIELD_MODIFY(variable, clearbitfield, setbitfield)
+
 https://graphics.stanford.edu/~seander/bithacks.html
+http://www.catb.org/esr/structure-packing/
