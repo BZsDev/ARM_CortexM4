@@ -5,3 +5,5 @@ RSTR - Reset register
 CCMR - capture/compare mode register
 CR   - control register
 DIER - DMA/Interrupt enable register
+
+https://graphics.stanford.edu/~seander/bithacks.html
