@@ -19,7 +19,7 @@
 #define GPIO_SET(port, pin)              (port->BSRR |= 0x1ul << pin)
 #define GPIO_RESET(port, pin)            (port->BRR |= 0x1ul << pin)
 
-#define GPIO_SETUP_MODE(port, pin, mode) (port->MODER = (port->MODER &= ~(3U << 2U * pin)) | (uint32_t)(mode << 2U * pin))
+#define GPIO_SETUP_MODE(port, pin, mode) ((port)->MODER = ((port)->MODER & (uint32_t)(~(3U << (2U * (pin))))) | (uint32_t)((mode) << (2U * (pin))))
 
 /**
  * @brief GPIO port.
