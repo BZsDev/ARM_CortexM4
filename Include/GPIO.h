@@ -9,17 +9,39 @@
 #define PROJCFG_APB1PRESC       (1u)
 #define PROJCFG_APB2PRESC       (1u)
 
+
+
 #define PROJDEF_HCLK_FREQ_HZ  (PROJDEF_SYSCLK_FREQ_HZ / PROJCFG_AHBPRESC)
-#define PROJDEF_PCLK1_FREQ_HZ (PROJDEF_HCLK_FREQ_HZ / PROJCFG_APB1PRESC) 
+#define PROJDEF_PCLK1_FREQ_HZ (PROJDEF_HCLK_FREQ_HZ / PROJCFG_APB1PRESC)
 #define PROJDEF_PCLK2_FREQ_HZ (PROJDEF_HCLK_FREQ_HZ / PROJCFG_APB2PRESC)
 
 #define PROJDEF_APB1_TIM_FREQ_HZ (PROJDEF_PCLK1_FREQ_HZ * ((PROJCFG_APB1PRESC == 1u) ? (1u) : (2u)))
 #define PROJDEF_APB2_TIM_FREQ_HZ (PROJDEF_PCLK2_FREQ_HZ * ((PROJCFG_APB2PRESC == 1u) ? (1u) : (2u)))
 
-#define GPIO_SET(port, pin)              (port->BSRR |= 0x1ul << pin)
-#define GPIO_RESET(port, pin)            (port->BRR |= 0x1ul << pin)
+/* For setting TIM 2..5 prescale register to a desired frequency */
+#define APB1_TIM_PRESC_SET(desiredFreq)  ((uint16_t)((PROJDEF_APB1_TIM_FREQ_HZ / (desiredFreq)) - 1U))
+
+/*********************/
+/**** GPIO MACROS ****/
+/*********************/
+
+#define GPIO_SET(port, pin)              ((port)->BSRR |= 0x1U << (pin))
+#define GPIO_RESET(port, pin)            ((port)->BRR  |= 0x1U << (pin))
+#define GPIO_TOGGLE(port, pin)           ((port)->ODR  ^= 0x1U << (pin))
 
 #define GPIO_SETUP_MODE(port, pin, mode) ((port)->MODER = ((port)->MODER & (uint32_t)(~(3U << (2U * (pin))))) | (uint32_t)((mode) << (2U * (pin))))
+
+
+#define PORTSETUP_SINGLE_BITFIELD_ALL(pin)          ((uint32_t)(0x1U << (1U * (pin))))
+#define PORTSETUP_DOUBLE_BITFIELD_ALL(pin)          ((uint32_t)(0x3U << (2U * (pin))))
+#define PORTSETUP_QUADRUPLE_BITFIELD_ALL(pin)       ((uint32_t)(0x15U << (4U * (pin))))
+#define PORTSETUP_SINGLE_BITFIELD_SET(pin, bits)    ((uint32_t)((bits) << (1U * (pin))))
+#define PORTSETUP_DOUBLE_BITFIELD_SET(pin, bits)    ((uint32_t)((bits) << (2U * (pin))))
+#define PORTSETUP_QUADRUPLE_BITFIELD_SET(pin, bits) ((uint32_t)((bits) << (4U * (pin))))
+
+/*********************/
+/**** GPIO MACROS ****/
+/*********************/
 
 /**
  * @brief GPIO port.
@@ -105,6 +127,9 @@ typedef enum
  */
 typedef enum
 {
+    /** Default */
+    GPIO_DEFAULT = 0U,
+
     /** Push-pull. */
     GPIO_PUSH_PULL = 0U,
 

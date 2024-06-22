@@ -5,7 +5,12 @@
         "stdint.h": "c",
         "system_stm32g4xx.h": "c",
         "stdint-gcc.h": "c",
-        "stm32g4xx.h": "c"
+        "stm32g4xx.h": "c",
+        "gpio.h": "c",
+        "test.h": "c",
+        "bitoperationutils.h": "c",
+        "type_traits": "c",
+        "header.h": "c"
     },
     "editor.fontSize": 14,
     "cSpell.words": [

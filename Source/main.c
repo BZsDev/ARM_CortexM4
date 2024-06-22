@@ -7,5 +7,11 @@
 int main(void)
 {
 
-    Test_GPIO_Toggle();
+    /* Test_Blank(); */
+    /* Test_GPIO_Toggle_2(); */
+    /* Test_Timer_1(); */
+    /* Test_Timer_2(); */
+    Test_PWM_1();
+
+    return 0;
 }
