@@ -14,15 +14,15 @@ void Test_Blank(void)
 
 
 
-void Test_GPIO_Toggle_1(void)
+void Test_GPIO_Out_Toggle_1(void)
 {
 
     tGpioPort *      port        = GPIOB;
-    tGpioPin         pin         = GPIO_PIN8;
-    tGpioMode        mode        = GPIO_OUTPUT;
-    tGpioOutputType  outputType  = GPIO_PUSH_PULL;
-    tGpioOutputSpeed outputSpeed = GPIO_LOW;
-    tGpioPull        pull        = GPIO_DEFAULT;
+    tGpioPin         pin         = GPIO_PIN_8;
+    tGpioMode        mode        = GPIO_MODE_OUTPUT;
+    tGpioOutputType  outputType  = GPIO_OTYPE_PUSH_PULL;
+    tGpioOutputSpeed outputSpeed = GPIO_OSPEED_LOW;
+    tGpioPull        pull        = GPIO_PULL_DISABLED;
     uint8_t          altFuncNum  = 0U;
 
     GpioSetup(port, pin, mode, outputType, outputSpeed, pull, altFuncNum);
@@ -47,15 +47,15 @@ void Test_GPIO_Toggle_1(void)
 
 
 
-void Test_GPIO_Toggle_2(void)
+void Test_GPIO_Out_Toggle_2(void)
 {
 
     tGpioPort *      port        = GPIOB;
-    tGpioPin         pin         = GPIO_PIN8;
-    tGpioMode        mode        = GPIO_OUTPUT;
-    tGpioOutputType  outputType  = GPIO_PUSH_PULL;
-    tGpioOutputSpeed outputSpeed = GPIO_LOW;
-    tGpioPull        pull        = GPIO_DEFAULT;
+    tGpioPin         pin         = GPIO_PIN_8;
+    tGpioMode        mode        = GPIO_MODE_OUTPUT;
+    tGpioOutputType  outputType  = GPIO_OTYPE_PUSH_PULL;
+    tGpioOutputSpeed outputSpeed = GPIO_OSPEED_LOW;
+    tGpioPull        pull        = GPIO_PULL_DISABLED;
     uint8_t          altFuncNum  = 0U;
 
     GpioSetup(port, pin, mode, outputType, outputSpeed, pull, altFuncNum);
@@ -86,11 +86,11 @@ void Test_Timer_1(void)
     volatile uint32_t counter;
 
     tGpioPort *      port        = GPIOB;
-    tGpioPin         pin         = GPIO_PIN8;
-    tGpioMode        mode        = GPIO_OUTPUT;
-    tGpioOutputType  outputType  = GPIO_PUSH_PULL;
-    tGpioOutputSpeed outputSpeed = GPIO_LOW;
-    tGpioPull        pull        = GPIO_DEFAULT;
+    tGpioPin         pin         = GPIO_PIN_8;
+    tGpioMode        mode        = GPIO_MODE_OUTPUT;
+    tGpioOutputType  outputType  = GPIO_OTYPE_PUSH_PULL;
+    tGpioOutputSpeed outputSpeed = GPIO_OSPEED_LOW;
+    tGpioPull        pull        = GPIO_PULL_DISABLED;
     uint8_t          altFuncNum  = 0U;
 
     GpioSetup(port, pin, mode, outputType, outputSpeed, pull, altFuncNum);
@@ -130,7 +130,7 @@ void TIM3_IRQHandler(void)
 {
     /* Global variable? */
     tGpioPort * port = GPIOB;
-    tGpioPin    pin  = GPIO_PIN8;
+    tGpioPin    pin  = GPIO_PIN_8;
 
     /* Toggle LED pin */
     GPIO_TOGGLE(port, pin);
@@ -146,11 +146,11 @@ void TIM3_IRQHandler(void)
 void Test_Timer_2(void)
 {
     tGpioPort *      port        = GPIOB;
-    tGpioPin         pin         = GPIO_PIN8;
-    tGpioMode        mode        = GPIO_OUTPUT;
-    tGpioOutputType  outputType  = GPIO_PUSH_PULL;
-    tGpioOutputSpeed outputSpeed = GPIO_LOW;
-    tGpioPull        pull        = GPIO_DEFAULT;
+    tGpioPin         pin         = GPIO_PIN_8;
+    tGpioMode        mode        = GPIO_MODE_OUTPUT;
+    tGpioOutputType  outputType  = GPIO_OTYPE_PUSH_PULL;
+    tGpioOutputSpeed outputSpeed = GPIO_OSPEED_LOW;
+    tGpioPull        pull        = GPIO_PULL_DISABLED;
     uint8_t          altFuncNum  = 0U;
 
     /* Setup builtin led output */
@@ -186,12 +186,14 @@ void Test_Timer_2(void)
 
 void Test_PWM_1(void)
 {
+    uint8_t counter = 0U;
+
     tGpioPort *      port        = GPIOB;
-    tGpioPin         pin         = GPIO_PIN8;
-    tGpioMode        mode        = GPIO_ALT_FUNC;
-    tGpioOutputType  outputType  = GPIO_PUSH_PULL;
-    tGpioOutputSpeed outputSpeed = GPIO_LOW;
-    tGpioPull        pull        = GPIO_DEFAULT;
+    tGpioPin         pin         = GPIO_PIN_8;
+    tGpioMode        mode        = GPIO_MODE_ALT_FUNC;
+    tGpioOutputType  outputType  = GPIO_OTYPE_PUSH_PULL;
+    tGpioOutputSpeed outputSpeed = GPIO_OSPEED_LOW;
+    tGpioPull        pull        = GPIO_PULL_DISABLED;
     uint8_t          altFuncNum  = 2U;
 
     /* Setup builtin led output with alternate function (CH3) */
@@ -227,9 +229,7 @@ void Test_PWM_1(void)
     /* Enable timer */
     BFS32(TIM4->CR1, TIM_CR1_CEN);
 
-    uint8_t counter = 0U;
-
-    while(1U)
+    while (1U)
     {
         uint32_t i;
 
@@ -247,4 +247,89 @@ void Test_PWM_1(void)
             counter = 0U;
         }
     }
+}
+
+
+
+void Test_GPIO_DigitalRead_1(void)
+{
+    tGpioPort * ledPort        = GPIOB;
+    tGpioPin    ledPin         = GPIO_PIN_8;
+    tGpioPort * buttonPort     = GPIOA;
+    tGpioPin    buttonPin      = GPIO_PIN_2;
+
+    /* Setup builtin LED output */
+    GpioSetup(ledPort, ledPin, GPIO_MODE_OUTPUT, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)0U);
+
+    /* Setup PA2 input buttom */
+    GpioSetup(buttonPort, buttonPin, GPIO_MODE_INPUT, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)0U);
+
+    while (1U)
+    {
+        /* If the input data register is set */
+        if (TRUE == GPIO_DIGITAL_READ(buttonPort, buttonPin))
+        {
+            /* Set LED */
+            GPIO_SET(ledPort, ledPin);
+        }
+        else
+        {
+            /* Reset LED */
+            GPIO_RESET(ledPort, ledPin);
+        }
+    }
+}
+
+
+
+void Test_ADC_Single_1(void)
+{
+    uint16_t dataADC = 0U;
+    uint16_t i;
+
+    tGpioPort * analogPort     = GPIOB;
+    tGpioPin    analogPin      = GPIO_PIN_0;
+
+    /* Setup analog input GPIO */
+    GpioSetup(analogPort, analogPin, GPIO_MODE_ANALOG, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)0U);
+
+    /* Enable ADC1 clock */
+    BFS32(RCC->AHB2ENR, RCC_AHB2ENR_ADC12EN);
+
+    /* Exit deep power down mode */
+    BFC32(ADC1->CR, ADC_CR_DEEPPWD);
+
+    /* Enable ADC voltage regulator */
+    BFS32(ADC1->CR, ADC_CR_ADVREGEN);
+
+    /* Wait some time (datasheet needed for the exact time) */
+    for (i = 0U; i < 1000U; i++);
+
+    /* Calibrate ADC (ADEN must be 0) */
+    BFS32(ADC1->CR, ADC_CR_ADCAL);
+
+    /* Wait for calibration */
+    while (ADC1->CR & ADC_CR_ADCAL_Msk);
+
+    /* Enable ADC1 */
+    BFS32(ADC1->CR, ADC_CR_ADEN);
+
+    /* Wait until the ADC1 is ready */
+    while (!(ADC1->ISR & ADC_ISR_ADRDY));
+
+    /* Select chanel 15 for PB0 */
+    BFM32(ADC1->SQR1, ADC_SQR1_SQ1_Msk, (15U << ADC_SQR1_SQ1_Pos));
+
+    /* Set sample time */
+    BFM32(ADC1->SMPR1, ADC_SMPR1_SMP1_Msk, (3U << ADC_SMPR1_SMP1_Pos));
+
+    while (1U)
+    {
+        BFS32(ADC1->CR, ADC_CR_ADSTART);
+
+        while (!(ADC1->ISR & ADC_ISR_EOC));
+
+        dataADC = (uint16_t)(ADC1->DR);
+    }
+
 }

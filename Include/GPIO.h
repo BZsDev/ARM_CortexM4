@@ -28,6 +28,7 @@
 #define GPIO_SET(port, pin)              ((port)->BSRR |= 0x1U << (pin))
 #define GPIO_RESET(port, pin)            ((port)->BRR  |= 0x1U << (pin))
 #define GPIO_TOGGLE(port, pin)           ((port)->ODR  ^= 0x1U << (pin))
+#define GPIO_DIGITAL_READ(port, pin)     (((port)->IDR &  0x1U << (pin)) == (0x1U << (pin)))
 
 #define GPIO_SETUP_MODE(port, pin, mode) ((port)->MODER = ((port)->MODER & (uint32_t)(~(3U << (2U * (pin))))) | (uint32_t)((mode) << (2U * (pin))))
 
@@ -54,52 +55,52 @@ typedef GPIO_TypeDef tGpioPort;
 typedef enum
 {
     /** Pin 0 */
-    GPIO_PIN0,
+    GPIO_PIN_0 = 0U,
 
     /** Pin 1 */
-    GPIO_PIN1,
+    GPIO_PIN_1,
 
     /** Pin 2 */
-    GPIO_PIN2,
+    GPIO_PIN_2,
 
     /** Pin 3 */
-    GPIO_PIN3,
+    GPIO_PIN_3,
 
     /** Pin 4 */
-    GPIO_PIN4,
+    GPIO_PIN_4,
 
     /** Pin 5 */
-    GPIO_PIN5,
+    GPIO_PIN_5,
 
     /** Pin 6 */
-    GPIO_PIN6,
+    GPIO_PIN_6,
 
     /** Pin 7 */
-    GPIO_PIN7,
+    GPIO_PIN_7,
 
     /** Pin 8 */
-    GPIO_PIN8,
+    GPIO_PIN_8,
 
     /** Pin 9 */
-    GPIO_PIN9,
+    GPIO_PIN_9,
 
     /** Pin 10 */
-    GPIO_PIN10,
+    GPIO_PIN_10,
 
     /** Pin 11 */
-    GPIO_PIN11,
+    GPIO_PIN_11,
 
     /** Pin 12 */
-    GPIO_PIN12,
+    GPIO_PIN_12,
 
     /** Pin 13 */
-    GPIO_PIN13,
+    GPIO_PIN_13,
 
     /** Pin 14 */
-    GPIO_PIN14,
+    GPIO_PIN_14,
 
     /** Pin 15 */
-    GPIO_PIN15
+    GPIO_PIN_15
 
 } tGpioPin;
 
@@ -109,16 +110,16 @@ typedef enum
 typedef enum
 {
     /** Input. */
-    GPIO_INPUT = 0U,
+    GPIO_MODE_INPUT = 0U,
 
     /** General purpose output. */
-    GPIO_OUTPUT,
+    GPIO_MODE_OUTPUT,
 
     /** Alternate function. */
-    GPIO_ALT_FUNC,
+    GPIO_MODE_ALT_FUNC,
 
     /** Analog. */
-    GPIO_ANALOG
+    GPIO_MODE_ANALOG
 
 } tGpioMode;
 
@@ -127,14 +128,11 @@ typedef enum
  */
 typedef enum
 {
-    /** Default */
-    GPIO_DEFAULT = 0U,
-
     /** Push-pull. */
-    GPIO_PUSH_PULL = 0U,
+    GPIO_OTYPE_PUSH_PULL = 0U,
 
     /** Open-drain. */
-    GPIO_OPEN_DRAIN
+    GPIO_OTYPE_OPEN_DRAIN
 
 } tGpioOutputType;
 
@@ -144,16 +142,16 @@ typedef enum
 typedef enum
 {
     /** Low. */
-    GPIO_LOW = 0U,
+    GPIO_OSPEED_LOW = 0U,
 
     /** Medium. */
-    GPIO_MEDIUM,
+    GPIO_OSPEED_MEDIUM,
 
     /** High. */
-    GPIO_HIGH,
+    GPIO_OSPEED_HIGH,
 
     /** Very High. */
-    GPIO_VERY_HIGH
+    GPIO_OSPEED_VERY_HIGH
 
 } tGpioOutputSpeed;
 
@@ -163,13 +161,13 @@ typedef enum
 typedef enum
 {
     /** No pull. */
-    GPIO_DISABLED = 0U,
+    GPIO_PULL_DISABLED = 0U,
 
     /** Pull up. */
-    GPIO_UP,
+    GPIO_PULL_UP,
 
     /** Pull down. */
-    GPIO_DOWN
+    GPIO_PULL_DOWN
 
 } tGpioPull;
 

@@ -3,8 +3,14 @@
 
 void GpioSetup(tGpioPort * const port, uint8_t pin, tGpioMode mode, tGpioOutputType outputType, tGpioOutputSpeed outputSpeed, tGpioPull pull, uint8_t altFuncNum)
 {
-    /* TODO: generalize this */
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    if      (GPIOA == port) RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    else if (GPIOB == port) RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    else if (GPIOC == port) RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
+    else if (GPIOD == port) RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;
+    else if (GPIOE == port) RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
+    else if (GPIOF == port) RCC->AHB2ENR |= RCC_AHB2ENR_GPIOFEN;
+    else if (GPIOG == port) RCC->AHB2ENR |= RCC_AHB2ENR_GPIOGEN;
+
 
 /*     port->MODER &= (uint32_t)~(0x3UL << (2u * pin));
     port->MODER |= (uint32_t)(mode << (2u * pin));
@@ -28,7 +34,6 @@ void GpioSetup(tGpioPort * const port, uint8_t pin, tGpioMode mode, tGpioOutputT
     BFM32(port->OSPEEDR, PORTSETUP_DOUBLE_BITFIELD_ALL(pin), PORTSETUP_DOUBLE_BITFIELD_SET(pin, outputSpeed));
     BFM32(port->PUPDR,   PORTSETUP_DOUBLE_BITFIELD_ALL(pin), PORTSETUP_DOUBLE_BITFIELD_SET(pin, pull));
 
-/* GPIOB->AFR[1] |= GPIO_AFRH_AFSEL8_1; */
 
     if (8U > pin)
     {

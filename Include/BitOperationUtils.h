@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#define TRUE  (1U)
+#define FALSE (0U)
 
 #define BITFIELD_SET(variable, bitfield, type)                      ((variable) |= (bitfield))
 #define BITFIELD_CLEAR(variable, bitfield, type)                    ((variable) &= (type)(~(bitfield)))
