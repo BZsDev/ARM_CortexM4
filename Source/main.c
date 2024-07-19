@@ -13,7 +13,8 @@ int main(void)
     /* Test_Timer_2(); */
     /* Test_PWM_1(); */
     /* Test_GPIO_DigitalRead_1(); */
-    Test_ADC_Single_1();
+    /* Test_ADC_Single_1(); */
+    Test_UART_TransmitterSingle_1();
 
     return 0;
 }

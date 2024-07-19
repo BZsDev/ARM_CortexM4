@@ -57,3 +57,10 @@ void Test_GPIO_DigitalRead_1(void);
  * @return void
  */
 void Test_ADC_Single_1(void);
+
+/**
+ * @brief Example function. Simple UART transmission.
+ * @param void
+ * @return void
+ */
+void Test_UART_TransmitterSingle_1(void);

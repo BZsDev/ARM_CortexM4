@@ -255,8 +255,8 @@ void Test_GPIO_DigitalRead_1(void)
 {
     tGpioPort * ledPort        = GPIOB;
     tGpioPin    ledPin         = GPIO_PIN_8;
-    tGpioPort * buttonPort     = GPIOA;
-    tGpioPin    buttonPin      = GPIO_PIN_2;
+    tGpioPort * buttonPort     = GPIOB;
+    tGpioPin    buttonPin      = GPIO_PIN_0;
 
     /* Setup builtin LED output */
     GpioSetup(ledPort, ledPin, GPIO_MODE_OUTPUT, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)0U);
@@ -285,13 +285,17 @@ void Test_GPIO_DigitalRead_1(void)
 void Test_ADC_Single_1(void)
 {
     uint16_t dataADC = 0U;
-    uint16_t i;
+    uint16_t adcDelayCnt;
 
     tGpioPort * analogPort     = GPIOB;
     tGpioPin    analogPin      = GPIO_PIN_0;
 
     /* Setup analog input GPIO */
     GpioSetup(analogPort, analogPin, GPIO_MODE_ANALOG, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)0U);
+
+    /* Set system clock as ADC1/2 clock */
+    RCC->CCIPR &= !RCC_CCIPR_ADC12SEL_Msk;
+    RCC->CCIPR |= RCC_CCIPR_ADC12SEL_1;
 
     /* Enable ADC1 clock */
     BFS32(RCC->AHB2ENR, RCC_AHB2ENR_ADC12EN);
@@ -302,8 +306,8 @@ void Test_ADC_Single_1(void)
     /* Enable ADC voltage regulator */
     BFS32(ADC1->CR, ADC_CR_ADVREGEN);
 
-    /* Wait some time (datasheet needed for the exact time) */
-    for (i = 0U; i < 1000U; i++);
+    /* Wait some time for startup */
+    for (adcDelayCnt = 0U; adcDelayCnt < 300U; ++adcDelayCnt) { __NOP(); }
 
     /* Calibrate ADC (ADEN must be 0) */
     BFS32(ADC1->CR, ADC_CR_ADCAL);
@@ -332,4 +336,52 @@ void Test_ADC_Single_1(void)
         dataADC = (uint16_t)(ADC1->DR);
     }
 
+}
+
+void Test_UART_TransmitterSingle_1(void)
+{
+    /* Setup UART2 pins */
+    GpioSetup(GPIOA, GPIO_PIN_2, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+    GpioSetup(GPIOA, GPIO_PIN_3, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+
+    /* Enable UART clock */
+    RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
+
+    /* Seleck PCLK as UART2 clock source (16Mhz) */
+    RCC->CCIPR &= !RCC_CCIPR_USART2SEL_Msk;
+
+    /* Divide clock by 2 (8Mhz) */
+    USART2->PRESC |= USART_PRESC_PRESCALER_0;
+
+    /* Setup word length (8 data bit) */
+    USART2->CR1 &= !(USART_CR1_M0_Msk & USART_CR1_M1_Msk);
+
+    /* Set baud rate register (9600) */
+    USART2->BRR = 0x0341;
+
+    /* Set stop bit (1 stop bit) */
+    USART2->CR2 &= !USART_CR2_STOP_Msk;
+
+    /* Enable USART2 */
+    USART2->CR1 |= USART_CR1_UE;
+
+    /* Set transmission enable */
+    USART2->CR1 |= USART_CR1_TE;
+
+    while (1U)
+    {
+        uint8_t  i;
+        uint32_t j;
+
+        for (i = 0; i < 255; i++)
+        {
+            /* Write data on transmission data register */
+            USART2->TDR = i;
+
+            /* Wait until transmission complete */
+            while (USART_ISR_TC != (USART2->ISR & USART_ISR_TC));
+
+            for (j=0U; j<1000000U; j++);
+        }
+    }
 }
