@@ -410,7 +410,7 @@ void Test_UART_ReceiverSingle_1(void)
     USART2->CR1 &= !(USART_CR1_M0_Msk & USART_CR1_M1_Msk);
 
     /* Set oversampling to 8 */
-    USART2->CR2 |= USART_CR1_OVER8;
+    USART2->CR1 |= USART_CR1_OVER8;
 
     /* Set baud rate register (9600) */
     USART2->BRR = 0x0681;
