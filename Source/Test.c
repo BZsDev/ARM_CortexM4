@@ -356,6 +356,9 @@ void Test_UART_TransmitterSingle_1(void)
     /* Setup word length (8 data bit) */
     USART2->CR1 &= !(USART_CR1_M0_Msk & USART_CR1_M1_Msk);
 
+    /* Set oversampling to 16 */
+    USART2->CR2 |= !USART_CR1_OVER8_Msk;
+
     /* Set baud rate register (9600) */
     USART2->BRR = 0x0341;
 
@@ -382,6 +385,59 @@ void Test_UART_TransmitterSingle_1(void)
             while (USART_ISR_TC != (USART2->ISR & USART_ISR_TC));
 
             for (j=0U; j<1000000U; j++);
+        }
+    }
+}
+
+void Test_UART_ReceiverSingle_1(void)
+{
+    volatile uint8_t receivedData = 0U;
+
+    /* Setup UART2 pins */
+    GpioSetup(GPIOA, GPIO_PIN_2, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+    GpioSetup(GPIOA, GPIO_PIN_3, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+
+    /* Enable UART clock */
+    RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
+
+    /* Seleck PCLK as UART2 clock source (16Mhz) */
+    RCC->CCIPR &= !RCC_CCIPR_USART2SEL_Msk;
+
+    /* Divide clock by 2 (8Mhz) */
+    USART2->PRESC |= USART_PRESC_PRESCALER_0;
+
+    /* Setup word length (8 data bit) */
+    USART2->CR1 &= !(USART_CR1_M0_Msk & USART_CR1_M1_Msk);
+
+    /* Set oversampling to 8 */
+    USART2->CR2 |= USART_CR1_OVER8;
+
+    /* Set baud rate register (9600) */
+    USART2->BRR = 0x0681;
+
+    /* Set stop bit (1 stop bit) */
+    USART2->CR2 &= !USART_CR2_STOP_Msk;
+
+    /* Set one sample bit method */
+    USART2->CR3 |= USART_CR3_ONEBIT;
+
+    /* NOTE: In one sample method, Noise detection flag (NE) will never set */
+
+    /* Enable FIFO */
+    USART2->CR1 |= USART_CR1_FIFOEN;
+
+    /* Enable USART2 */
+    USART2->CR1 |= USART_CR1_UE;
+
+    /* Enable receiver (start scanning for start bit) */
+    USART2->CR1 |= USART_CR1_RE;
+
+    while (1U)
+    {
+        /* If RXFIFO is not empty */
+        if (USART_ISR_RXNE_RXFNE_Msk == (USART2->ISR & USART_ISR_RXNE_RXFNE_Msk))
+        {
+            receivedData = USART2->RDR;
         }
     }
 }

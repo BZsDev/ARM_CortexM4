@@ -14,7 +14,8 @@ int main(void)
     /* Test_PWM_1(); */
     /* Test_GPIO_DigitalRead_1(); */
     /* Test_ADC_Single_1(); */
-    Test_UART_TransmitterSingle_1();
+    /* Test_UART_TransmitterSingle_1(); */
+    Test_UART_ReceiverSingle_1();
 
-    return 0;
+    return 0U;
 }
