@@ -6,4 +6,5 @@
 *.elf
 *.lst
 *.d
+*.so
 Dummy/*

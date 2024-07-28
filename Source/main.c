@@ -15,7 +15,9 @@ int main(void)
     /* Test_GPIO_DigitalRead_1(); */
     /* Test_ADC_Single_1(); */
     /* Test_UART_TransmitterSingle_1(); */
-    Test_UART_ReceiverSingle_1();
+    /* Test_UART_ReceiverSingle_1(); */
+    /* Test_UART_ReceiverTransmitterSingleInterrupt_1(); */
+    /* Test_UART_TransmitterFloat_1(); */
 
     return 0U;
 }

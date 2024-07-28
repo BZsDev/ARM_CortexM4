@@ -2,7 +2,7 @@
 #include "Test.h"
 #include "BitOperationUtils.h"
 
-
+/* ************************************************** */
 
 void Test_Blank(void)
 {
@@ -12,7 +12,7 @@ void Test_Blank(void)
     }
 }
 
-
+/* ************************************************** */
 
 void Test_GPIO_Out_Toggle_1(void)
 {
@@ -45,7 +45,7 @@ void Test_GPIO_Out_Toggle_1(void)
     }
 }
 
-
+/* ************************************************** */
 
 void Test_GPIO_Out_Toggle_2(void)
 {
@@ -79,7 +79,7 @@ void Test_GPIO_Out_Toggle_2(void)
     }
 }
 
-
+/* ************************************************** */
 
 void Test_Timer_1(void)
 {
@@ -124,7 +124,7 @@ void Test_Timer_1(void)
     }
 }
 
-
+/* ************************************************** */
 
 void TIM3_IRQHandler(void)
 {
@@ -182,7 +182,7 @@ void Test_Timer_2(void)
     }
 }
 
-
+/* ************************************************** */
 
 void Test_PWM_1(void)
 {
@@ -249,7 +249,7 @@ void Test_PWM_1(void)
     }
 }
 
-
+/* ************************************************** */
 
 void Test_GPIO_DigitalRead_1(void)
 {
@@ -280,7 +280,7 @@ void Test_GPIO_DigitalRead_1(void)
     }
 }
 
-
+/* ************************************************** */
 
 void Test_ADC_Single_1(void)
 {
@@ -338,6 +338,8 @@ void Test_ADC_Single_1(void)
 
 }
 
+/* ************************************************** */
+
 void Test_UART_TransmitterSingle_1(void)
 {
     /* Setup UART2 pins */
@@ -389,6 +391,8 @@ void Test_UART_TransmitterSingle_1(void)
     }
 }
 
+/* ************************************************** */
+
 void Test_UART_ReceiverSingle_1(void)
 {
     volatile uint8_t receivedData = 0U;
@@ -437,7 +441,133 @@ void Test_UART_ReceiverSingle_1(void)
         /* If RXFIFO is not empty */
         if (USART_ISR_RXNE_RXFNE_Msk == (USART2->ISR & USART_ISR_RXNE_RXFNE_Msk))
         {
-            receivedData = USART2->RDR;
+            receivedData = (uint8_t)USART2->RDR;
         }
     }
+}
+
+/* ************************************************** */
+
+volatile uint8_t receivedData = 0U;
+
+void USART2_IRQHandler(void)
+{
+    /* If RXFIFO is not empty */
+    if (USART_ISR_RXNE_RXFNE_Msk == (USART2->ISR & USART_ISR_RXNE_RXFNE_Msk))
+    {
+        /* Read the received data */
+        receivedData = (uint8_t)USART2->RDR;
+    }
+
+    /* Write the received data back on transmission data register */
+    USART2->TDR = receivedData;
+}
+
+void Test_UART_ReceiverTransmitterSingleInterrupt_1(void)
+{
+    /* Setup UART2 pins */
+    GpioSetup(GPIOA, GPIO_PIN_2, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+    GpioSetup(GPIOA, GPIO_PIN_3, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+
+    /* Enable UART clock */
+    RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
+
+    /* Seleck PCLK as UART2 clock source (16Mhz) */
+    RCC->CCIPR &= !RCC_CCIPR_USART2SEL_Msk;
+
+    /* Divide clock by 2 (8Mhz) */
+    USART2->PRESC |= USART_PRESC_PRESCALER_0;
+
+    /* Setup word length (8 data bit) */
+    USART2->CR1 &= !(USART_CR1_M0_Msk & USART_CR1_M1_Msk);
+
+    /* Set oversampling to 8 */
+    USART2->CR1 |= USART_CR1_OVER8;
+
+    /* Set baud rate register (9600) */
+    USART2->BRR = 0x0681;
+
+    /* Set stop bit (1 stop bit) */
+    USART2->CR2 &= !USART_CR2_STOP_Msk;
+
+    /* Set one sample bit method */
+    USART2->CR3 |= USART_CR3_ONEBIT;
+
+    /* NOTE: In one sample method, Noise detection flag (NE) will never set */
+
+    /* Enable FIFO */
+    USART2->CR1 |= USART_CR1_FIFOEN;
+
+    /* Enable FIFO not empty interrupt */
+    USART2->CR1 |= USART_CR1_RXNEIE_RXFNEIE;
+
+    /* Enable the USART2 interrupt */
+    NVIC_EnableIRQ(USART2_IRQn);
+
+    /* Set USART2 interrupt priority */
+    NVIC_SetPriority(USART2_IRQn, 0U);
+
+    /* Enable USART2 */
+    USART2->CR1 |= USART_CR1_UE;
+
+    /* Set transmission enable */
+    USART2->CR1 |= USART_CR1_TE;
+
+    /* Enable receiver (start scanning for start bit) */
+    USART2->CR1 |= USART_CR1_RE;
+
+    while (1U)
+    {
+    }
+}
+
+/* ************************************************** */
+
+void UARTInit_1(void)
+{
+    /* Setup UART2 pins */
+    GpioSetup(GPIOA, GPIO_PIN_2, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+    GpioSetup(GPIOA, GPIO_PIN_3, GPIO_MODE_ALT_FUNC, GPIO_OTYPE_PUSH_PULL, GPIO_OSPEED_LOW, GPIO_PULL_DISABLED, (uint8_t)7U);
+
+    /* Enable UART clock */
+    RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
+
+    /* Seleck PCLK as UART2 clock source (16Mhz) */
+    RCC->CCIPR &= !RCC_CCIPR_USART2SEL_Msk;
+
+    /* Divide clock by 2 (8Mhz) */
+    USART2->PRESC |= USART_PRESC_PRESCALER_0;
+
+    /* Setup word length (8 data bit) */
+    USART2->CR1 &= !(USART_CR1_M0_Msk & USART_CR1_M1_Msk);
+
+    /* Set oversampling to 16 */
+    USART2->CR2 |= !USART_CR1_OVER8_Msk;
+
+    /* Set baud rate register (9600) */
+    USART2->BRR = 0x0341;
+
+    /* Set stop bit (1 stop bit) */
+    USART2->CR2 &= !USART_CR2_STOP_Msk;
+
+   /* Enable FIFO */
+    USART2->CR1 |= USART_CR1_FIFOEN;
+
+    /* Enable USART2 */
+    USART2->CR1 |= USART_CR1_UE;
+
+    /* Set transmission enable */
+    USART2->CR1 |= USART_CR1_TE;
+}
+
+void Test_UART_TransmitterFloat_1(void)
+{
+    float floatVar = 123.456F;
+
+    UARTInit_1();
+
+    USART2->TDR = (uint8_t)(*((uint32_t *)(void *)&floatVar) >> 0U);
+    USART2->TDR = (uint8_t)(*((uint32_t *)(void *)&floatVar) >> 8U);
+    USART2->TDR = (uint8_t)(*((uint32_t *)(void *)&floatVar) >> 16U);
+    USART2->TDR = (uint8_t)(*((uint32_t *)(void *)&floatVar) >> 24U);
 }
